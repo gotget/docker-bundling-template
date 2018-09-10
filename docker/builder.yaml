@@ -1,5 +1,9 @@
 # WARNING: this file should use an indentation of 2 spaces.
 
+# bin/build.bash parameter
+build:
+  clean: True
+
 # bin/run.bash parameter (launches into this container for testing)
 run:
   container: myapp

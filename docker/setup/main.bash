@@ -17,6 +17,8 @@ SCRIPTPATH="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 SCRIPTNAME=`basename "$SOURCE"`
 ################################################################################
 
+export DEBIAN_FRONTEND="noninteractive"
+
 function setupPrerequisites {
 
 	apt-get update
@@ -39,9 +41,11 @@ function cleanup {
 
 } # END FUNCTION : cleanup
 
-shopt -s dotglob
-mv -v /tmp/app/* /usr/src/app/
-shopt -u dotglob
+if [ -d /tmp/app/ ]; then
+	shopt -s dotglob
+	mv -v /tmp/app/* /usr/src/app/
+	shopt -u dotglob
+fi
 
 setupPrerequisites
 

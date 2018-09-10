@@ -35,6 +35,10 @@ export APPPATH="$( cd -P "${SCRIPTPATH}/../app/" && pwd )"
 # https://unix.stackexchange.com/questions/282055/a-lot-of-files-inside-a-tar
 export COPYFILE_DISABLE=1
 
+# Parse YAML
+source "${SCRIPTPATH}/.support.bash"
+eval $( parse_yaml "${DOCKERPATH}/builder.yaml" )
+
 # Select Mode
 [[ $1 = "deploy" ]] && mode="$1" || mode="develop"
 
@@ -86,9 +90,13 @@ if [ -f "${BASEPATH}/bundle.tar" ]; then
 fi
 
 # Clean Docker
-if [ "$mode" == "develop" ]; then
+if [ "$mode" == "develop" ] && [ "${build_clean^^}" == "TRUE" ]; then
+
+	echo -n "Cleaning Docker..."
 
 	( docker rm $(docker ps --all --quiet --no-trunc --filter 'status=exited') ) >/dev/null 2>&1
 	( docker rmi $(docker images --quiet --filter 'dangling=true') ) >/dev/null 2>&1
+
+	echo "Done."
 
 fi

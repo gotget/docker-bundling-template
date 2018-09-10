@@ -7,13 +7,10 @@ WORKDIR /usr/src/app
 
 #----------------------------------------------------------------------- DEVELOP
 
+COPY	./docker/setup/ /tmp/setup/
 COPY	./app/setup/ /usr/src/app/setup/
 
-RUN		apt-get update \
-		&& \
-		/bin/bash -c "( xargs --arg-file=<(awk '! /^ *(#|$)/' "/usr/src/app/setup/packages.txt") -r -- apt-get install -y )" \
-		&& \
-		pip install --no-cache-dir --requirement /usr/src/app/setup/modules.txt
+RUN		/tmp/setup/main.bash
 
 COPY	./app/ /usr/src/app/
 
