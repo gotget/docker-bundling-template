@@ -1,0 +1,22 @@
+FROM python:3
+
+LABEL maintainer="Louis T. Getterman IV <Thad.Getterman@gmail.com>"
+LABEL "org.getterman.thad.vendor"="Louis T. Getterman IV"
+
+WORKDIR /usr/src/app
+
+#----------------------------------------------------------------------- DEVELOP
+
+COPY	./app/setup/ /usr/src/app/setup/
+
+RUN		apt-get update \
+		&& \
+		/bin/bash -c "( xargs --arg-file=<(awk '! /^ *(#|$)/' "/usr/src/app/setup/packages.txt") -r -- apt-get install -y )" \
+		&& \
+		pip install --no-cache-dir --requirement /usr/src/app/setup/modules.txt
+
+COPY	./app/ /usr/src/app/
+
+#-----------------------------------------------------------------------/DEVELOP
+
+CMD	[ "/bin/bash", "/usr/src/app/launch.bash" ]

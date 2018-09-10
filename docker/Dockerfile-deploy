@@ -1,0 +1,21 @@
+FROM python:3
+
+LABEL maintainer="Louis T. Getterman IV <Thad.Getterman@gmail.com>"
+LABEL "org.getterman.thad.vendor"="Louis T. Getterman IV"
+
+WORKDIR /usr/src/app
+
+#------------------------------------------------------------------------ DEPLOY
+
+COPY	./bundle.tar	/tmp/
+
+RUN		tar \
+			-C /tmp/ \
+			-xvf /tmp/bundle.tar \
+		&& \
+		bash /tmp/docker/setup/main.bash \
+		;
+
+#------------------------------------------------------------------------/DEPLOY
+
+CMD	[ "/bin/bash", "/usr/src/app/launch.bash" ]

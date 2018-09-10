@@ -1,0 +1,11 @@
+# WARNING: this file should use an indentation of 2 spaces.
+
+# bin/run.bash parameter (launches into this container for testing)
+run:
+  container: myapp
+
+# bin/sync.bash parameters
+sync:
+  user: myUsername
+  host: example.com
+  path: ~/srv/myApp/
