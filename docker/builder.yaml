@@ -1,8 +1,10 @@
-# WARNING: this file should use an indentation of 2 spaces.
+# WARNING: due to direct parsing by Bash script, this file should use an indentation of 2 spaces.
 
 # bin/build.bash parameter
 build:
   clean: True
+  image: python
+  version: 3
 
 # bin/run.bash parameter (launches into this container for testing)
 run:

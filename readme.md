@@ -21,7 +21,7 @@ For the purpose of this repository, the goal is #1: the higher-level needs may c
 
 `launch.bash` - Used for starting your program. You'll notice that the initial point in this file starts with `app/main.py`
 
-`setup/main.bash` - This is **optional** for extending the installation process, and not a necessary edit.
+`setup/main.bash` (optional) - Used for extending the installation process, and not a necessary edit.
 
 `setup/modules.txt` - Python modules (1 per line.)
 
@@ -29,7 +29,20 @@ For the purpose of this repository, the goal is #1: the higher-level needs may c
 
 ### `docker/`
 
-`builder.yaml` - Run and synchronization parameters for scripts to run (listed below.)
+`builder.yaml` - Run and synchronization parameters for scripts to run (listed in *Scripts to run* section.)
+
+Available sections with parameters for this YAML file:
+
+ - **build** - used by `bin/build.bash`
+	 - **clean** - attempt to remove *dangling* Docker images and *exited* containers after each build.
+	 - **image** - Docker image base to pull from.
+	 - **version** - Docker image base version to pull from (e.g. "latest".)
+ - **run** - used by `bin/run.bash`
+	 - **container** - which container in your `docker-compose.yaml` and `docker-compose-develop.yaml` files to interactively run.
+ - **sync** (optional) - used by `bin/sync.bash` for live syncing via SSH.
+	 - **user** - remote username.
+	 - **host** - remote host.
+	 - **path** - remote path to synchronize to.
 
 `docker-compose.yaml` - For deploying.
 

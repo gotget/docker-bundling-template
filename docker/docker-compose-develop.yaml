@@ -17,6 +17,9 @@ services:
         build:
             context: ../
             dockerfile: "docker/${dockerFileBuild}"
+            args:
+                IMG_BASE: ${dockerImage}
+                CODE_VERSION: ${dockerVersion}
 
         environment:
 

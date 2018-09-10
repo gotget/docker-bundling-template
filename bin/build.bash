@@ -39,6 +39,9 @@ export COPYFILE_DISABLE=1
 source "${SCRIPTPATH}/.support.bash"
 eval $( parse_yaml "${DOCKERPATH}/builder.yaml" )
 
+export dockerImage="${build_image}"
+export dockerVersion="${build_version}"
+
 # Select Mode
 [[ $1 = "deploy" ]] && mode="$1" || mode="develop"
 
@@ -90,7 +93,7 @@ if [ -f "${BASEPATH}/bundle.tar" ]; then
 fi
 
 # Clean Docker
-if [ "$mode" == "develop" ] && [ "${build_clean^^}" == "TRUE" ]; then
+if [ "${build_clean^^}" == "TRUE" ]; then
 
 	echo -n "Cleaning Docker..."
 

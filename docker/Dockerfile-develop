@@ -1,4 +1,6 @@
-FROM python:3
+ARG  IMG_BASE
+ARG  CODE_VERSION=latest
+FROM ${IMG_BASE}:${CODE_VERSION}
 
 LABEL maintainer="Louis T. Getterman IV <Thad.Getterman@gmail.com>"
 LABEL "org.getterman.thad.vendor"="Louis T. Getterman IV"
