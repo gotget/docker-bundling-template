@@ -23,14 +23,24 @@ SCRIPTPATH="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 SCRIPTNAME=`basename "$SOURCE"`
 ################################################################################
 
+# To-do: add error checking
+# set -o errexit
+
 # Additional paths
-BASEPATH="$( cd -P "${SCRIPTPATH}/../" && pwd )"
-DOCKERPATH="$( cd -P "${SCRIPTPATH}/../docker/" && pwd )"
+export BASEPATH="$( cd -P "${SCRIPTPATH}/../" && pwd )"
 export APPPATH="$( cd -P "${SCRIPTPATH}/../app/" && pwd )"
+export DBTPATH="${APPPATH}/.dbt/"
 
 # Parse YAML
 source "${SCRIPTPATH}/.support.bash"
-eval $( parse_yaml "${DOCKERPATH}/builder.yaml" )
+eval $( parse_yaml "${DBTPATH}/config.yaml" )
+
+# Environment variables for Docker (Compose)
+export dockerBuildImage="${app_image_name}"
+export dockerBuildVersion="${app_image_version}"
+export dockerContainerName="${app_container_name}"
+export dockerImage="${build_base_image}"
+export dockerVersion="${build_base_version}"
 
 # Select Mode
 [[ $1 = "deploy" ]] && mode="$1" || mode="develop"
@@ -60,15 +70,15 @@ else
 
 fi
 
-echo "Running '${run_container}'"
+echo "Running '${app_run_service}'"
 docker-compose \
-		--file "${DOCKERPATH}/docker-compose${composeFileSuffix}.yaml" \
-		run "${run_container}" $* \
+		--file "${DBTPATH}/docker/docker-compose${composeFileSuffix}.yaml" \
+		run "${app_run_service}" $* \
 		;
 
 echo -n "Tear-down..."
 docker-compose \
-		--file "${DOCKERPATH}/docker-compose${composeFileSuffix}.yaml" \
+		--file "${DBTPATH}/docker/docker-compose${composeFileSuffix}.yaml" \
 		down \
 		>/dev/null 2>&1 &
 echo "Done!"

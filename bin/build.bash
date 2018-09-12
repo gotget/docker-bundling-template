@@ -26,21 +26,24 @@ SCRIPTPATH="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 SCRIPTNAME=`basename "$SOURCE"`
 ################################################################################
 
-# Additional paths
-BASEPATH="$( cd -P "${SCRIPTPATH}/../" && pwd )"
-DOCKERPATH="$( cd -P "${SCRIPTPATH}/../docker/" && pwd )"
-export APPPATH="$( cd -P "${SCRIPTPATH}/../app/" && pwd )"
+# To-do: add error checking
+# set -o errexit
 
-# Avoid OS X files being added to the archive
-# https://unix.stackexchange.com/questions/282055/a-lot-of-files-inside-a-tar
-export COPYFILE_DISABLE=1
+# Additional paths
+export BASEPATH="$( cd -P "${SCRIPTPATH}/../" && pwd )"
+export APPPATH="$( cd -P "${SCRIPTPATH}/../app/" && pwd )"
+export DBTPATH="${APPPATH}/.dbt/"
 
 # Parse YAML
 source "${SCRIPTPATH}/.support.bash"
-eval $( parse_yaml "${DOCKERPATH}/builder.yaml" )
+eval $( parse_yaml "${DBTPATH}/config.yaml" )
 
-export dockerImage="${build_image}"
-export dockerVersion="${build_version}"
+# Environment variables for Docker (Compose)
+export dockerBuildImage="${app_image_name}"
+export dockerBuildVersion="${app_image_version}"
+export dockerContainerName="${app_container_name}"
+export dockerImage="${build_base_image}"
+export dockerVersion="${build_base_version}"
 
 # Select Mode
 [[ $1 = "deploy" ]] && mode="$1" || mode="develop"
@@ -53,9 +56,15 @@ sleep 2
 if [ "$mode" == "deploy" ]; then
 
 	export dockerFileBuild="Dockerfile-deploy"
+	composeFileSuffix=""
 
 	echo "Bundling Docker and Application includes..."
 	cd "${BASEPATH}"
+
+	# Avoid OS X files being added to the archive
+	# https://unix.stackexchange.com/questions/282055/a-lot-of-files-inside-a-tar
+	export COPYFILE_DISABLE=1
+
 	tar \
 		--exclude '.DS_Store' \
 		-cvf "${BASEPATH}/bundle.tar" \
@@ -63,26 +72,20 @@ if [ "$mode" == "deploy" ]; then
 		./app/ \
 		;
 
-	# Build image
-	echo "Docker Compose building image..."
-	docker-compose \
-		--file "${DOCKERPATH}/docker-compose.yaml" \
-		build \
-		;
-
 # Create bundle : Develop
 else
 
 	export dockerFileBuild="Dockerfile-develop"
-
-	# Build image
-	echo "Docker Compose building image..."
-	docker-compose \
-		--file "${DOCKERPATH}/docker-compose-develop.yaml" \
-		build \
-		;
+	composeFileSuffix="-develop"
 
 fi
+
+# Build image
+echo "Docker Compose building image..."
+docker-compose \
+	--file "${DBTPATH}/docker/docker-compose${composeFileSuffix}.yaml" \
+	build \
+	;
 
 # Clean bundle
 if [ -f "${BASEPATH}/bundle.tar" ]; then

@@ -41,6 +41,7 @@ function cleanup {
 
 } # END FUNCTION : cleanup
 
+# Move application into place
 if [ -d /tmp/app/ ]; then
 	shopt -s dotglob
 	mv -v /tmp/app/* /usr/src/app/
@@ -49,6 +50,8 @@ fi
 
 setupPrerequisites
 
-bash /usr/src/app/setup/main.bash
+bash /usr/src/app/.dbt/setup/main.bash
 
 cleanup
+
+ldconfig

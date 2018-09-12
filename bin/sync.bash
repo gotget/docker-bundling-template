@@ -17,13 +17,15 @@ SCRIPTPATH="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 SCRIPTNAME=`basename "$SOURCE"`
 ################################################################################
 
+set -o errexit
+
 # Additional paths
 BASEPATH="$( cd -P "${SCRIPTPATH}/../" && pwd )"
-DOCKERPATH="$( cd -P "${SCRIPTPATH}/../docker/" && pwd )"
+export DBTPATH="${APPPATH}/.dbt/"
 
 # Parse YAML
 source "${SCRIPTPATH}/.support.bash"
-eval $( parse_yaml "${DOCKERPATH}/builder.yaml" )
+eval $( parse_yaml "${DBTPATH}/config.yaml" )
 
 fsSrc="${BASEPATH}/"
 fsDest="${sync_user}@${sync_host}:${sync_path}"

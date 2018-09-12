@@ -9,11 +9,16 @@ WORKDIR /usr/src/app
 
 #----------------------------------------------------------------------- DEVELOP
 
+# Docker Setup
 COPY	./docker/setup/ /tmp/setup/
-COPY	./app/setup/ /usr/src/app/setup/
 
+# Application Setup
+COPY	./app/.dbt/setup/ /usr/src/app/.dbt/setup/
+
+# Docker Setup -> Application Setup
 RUN		/tmp/setup/main.bash
 
+# Application
 COPY	./app/ /usr/src/app/
 
 #-----------------------------------------------------------------------/DEVELOP

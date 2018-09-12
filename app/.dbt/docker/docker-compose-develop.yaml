@@ -10,13 +10,13 @@ services:
 
     myapp:
 
-        container_name: myapp
-        image: myapp:latest
+        container_name: ${dockerContainerName}
+        image: ${dockerBuildImage}:${dockerBuildVersion}
         restart: always
 
         build:
-            context: ../
-            dockerfile: "docker/${dockerFileBuild}"
+            context: ${BASEPATH}
+            dockerfile: docker/${dockerFileBuild}
             args:
                 IMG_BASE: ${dockerImage}
                 CODE_VERSION: ${dockerVersion}

@@ -1,14 +1,18 @@
 # WARNING: due to direct parsing by Bash script, this file should use an indentation of 2 spaces.
 
-# bin/build.bash parameter
+# Application settings used by various scripts.
+app:
+  container_name: myapp
+  image_name: myapp
+  image_version: latest
+  run_service: myapp
+
+# bin/build.bash parameters
 build:
   clean: True
-  image: python
-  version: 3
-
-# bin/run.bash parameter (launches into this container for testing)
-run:
-  container: myapp
+  base:
+    image: python
+    version: 3
 
 # bin/sync.bash parameters
 sync:
