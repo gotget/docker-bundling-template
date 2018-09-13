@@ -49,14 +49,29 @@ In most cases, the only files that you'll need to edit are inside the `app/` dir
 
 ## Scripts to run
 
-`bin/build.bash` - Used to build your Docker image, and has 2 modes to choose from via argument passed at command line:
+### `bin/build.bash`
+Used to build your Docker image, and has 2 modes to choose from, via argument passed at command line:
 
- 1. `bin/build.bash develop` (default) - Caches prerequisites, connects host volume to container, and drops you into a Bash shell.
- 2. `bin/build.bash deploy` - Bundles everything together.
+ 1. `bin/build.bash develop` (default) - Assembles prerequisites, but will not bundle your application.
+ 2. `bin/build.bash deploy` - Bundles _everything_ together.
 
-`bin/run.bash develop` (default) - Mostly used for developing, but good for checking your application's run for deployment (`bin/run.bash deploy`) on your remote server.
+---
 
-`bin/sync.bash` - useful for copying edits in real-time to a remote server, and developing (or deploying.)
+### `bin/run.bash`
+Mostly used for developing, but can also be used for testing a production run before passing it over to `systemd`.  Like aforementioned `build.bash` (which is automatically called by `run.bash`), there are 2 modes to choose from, via argument passed at command line:
+
+ 1. `bin/run.bash develop` (default) - Connects host volume to container, and drops you into a Bash shell.
+ 2. `bin/run.bash deploy` - Run identically to `systemd` configuration, where your application is built into the Docker image.
+
+---
+
+### `bin/export.bash`
+Builds image for deploy mode, then saves this image as `app.tar` next to `app/`.  You can then upload `app.tar` and install it manually with `docker load --input app.tar`, or automate uploading and installation across a cluster of servers using a powerful tool like [Ansible](https://www.ansible.com/).
+
+---
+
+### `bin/sync.bash`
+Useful for copying edits in real-time to a remote server, and developing (or deploying.)
 
 # Authors/Contributors
 * [Louis T. Getterman IV](https://Thad.Getterman.org/about)
