@@ -23,6 +23,11 @@ function setupPrerequisites {
 
 	apt-get update
 
+	# Ensure apt-add-repository exists
+	if ! hash "apt-add-repository" 2>/dev/null; then
+		apt-get install --yes software-properties-common;
+	fi
+
 } # END FUNCTION : setupPrerequisites
 
 function cleanup {

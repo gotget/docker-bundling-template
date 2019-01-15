@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 : <<'!COMMENT'
 
+# Abort if error encountered
+set -e
+
 This script is used to handle the installation process via configuration files:
 
-	* packages.txt - for the system
-	* modules.txt  - for the Python modules
+	* repositories.txt - for the system repositories.
+	* packages.txt     - for the system packages.
+	* modules.txt      - for the Python modules.
 
 Upon completion, clean up the programs installation directory (app/setup/)
+
+Thanks:
+
+* https://askubuntu.com/questions/252734/apt-get-mass-install-packages-from-a-file
 
 !COMMENT
 
@@ -24,9 +32,17 @@ SCRIPTNAME=`basename "$SOURCE"`
 
 function installs {
 
+	# Install system repositories
+	repoList="$(awk '! /^ *(#|$)/' "${SCRIPTPATH}/repositories.txt")"
+	if [ ! -z "${repoList}" ]; then
+		for currRepo in ${repoList[@]}; do
+			apt-add-repository --yes "${currRepo}"
+		done
+		apt-get update
+	fi
+
 	# Install system packages
-	# Thanks: https://askubuntu.com/questions/252734/apt-get-mass-install-packages-from-a-file
-	xargs --arg-file=<(awk '! /^ *(#|$)/' "${SCRIPTPATH}/packages.txt") --no-run-if-empty -- apt-get install --yes
+	xargs --arg-file=<(awk '! /^ *(#|$)/' "${SCRIPTPATH}/packages.txt") --no-run-if-empty --max-args=1 -- apt-get install --yes
 
 	# Install Python modules
 	pip install --no-cache-dir --requirement "${SCRIPTPATH}/modules.txt"

@@ -20,7 +20,8 @@ SCRIPTNAME=`basename "$SOURCE"`
 set -o errexit
 
 # Additional paths
-BASEPATH="$( cd -P "${SCRIPTPATH}/../" && pwd )"
+export BASEPATH="$( cd -P "${SCRIPTPATH}/../" && pwd )"
+export APPPATH="$( cd -P "${SCRIPTPATH}/../app/" && pwd )"
 export DBTPATH="${APPPATH}/.dbt/"
 
 # Parse YAML
@@ -43,6 +44,7 @@ alias run_rsync="rsync \
 	--keep-dirlinks \
 	--rsh=/usr/bin/ssh \
 	\
+	--include ".dbt/" \
 	--exclude 'sync.bash' \
 	--exclude '.*/' \
 	--exclude '.*' \

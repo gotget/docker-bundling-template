@@ -12,7 +12,8 @@ services:
 
         container_name: ${dockerContainerName}
         image: ${dockerBuildImage}:${dockerBuildVersion}
-        restart: always
+
+        restart: always                                     # For Server, or if X-11 Kiosk
 
         build:
             context: ${BASEPATH}
@@ -24,10 +25,12 @@ services:
         environment:
 
             PYTHONUNBUFFERED: 1
+            # DISPLAY: ${DISPLAY}                           # Enable for X-11 support
 
         command: /bin/bash
 
         volumes:
             - $APPPATH:/usr/src/app/:ro
+            # - "$HOME/.Xauthority:/root/.Xauthority:rw"    # Enable for X-11 support
 
 ################################################################################

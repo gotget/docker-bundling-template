@@ -11,6 +11,12 @@ app:
 build:
   clean: True
   base:
+
+    # Base off of stable from https://hub.docker.com/_/ubuntu
+    # image: ubuntu
+    # version: 18.04
+
+    # Base off of latest from https://hub.docker.com/_/python/
     image: python
     version: 3
 
